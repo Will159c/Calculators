@@ -6,7 +6,7 @@ public class RRE_Form {
         MatrixMethods i = new MatrixMethods();
         i.WriteMatrixValues();
         i.printMatrix();
-        i.CheckForZeros();
+        i.RREF();
         i.printMatrix();
         
     }
