@@ -119,79 +119,86 @@ public class MatrixMethods {
         JPanel panel = new JPanel(new GridLayout(row, column));
         frame.setSize(600, 400);
         frame.add(panel);
+
         JButton exit = new JButton("Exit");
-        frame.add(exit, BorderLayout.NORTH);
         JButton RREF = new JButton("RREF");
-        frame.add(RREF, BorderLayout.SOUTH);
         JButton display = new JButton("display");
+        JButton updateMatrix = new JButton("Update");
+
+        frame.add(updateMatrix, BorderLayout.WEST);
+        frame.add(exit, BorderLayout.NORTH);
+        frame.add(RREF, BorderLayout.SOUTH);
         frame.add(display, BorderLayout.EAST);
 
 
         double[][] matrix = new double[row][column];
+        JTextArea[][] matrixTextArea = new JTextArea[row][column];
 
 
         for (int i = 0; i < row; i++) {
             for (int j = 0; j < column; j++) {
-                textArea = new JTextArea();
-                JScrollPane scrollPane = new JScrollPane(textArea);
+                matrixTextArea[i][j] = new JTextArea();
+                JScrollPane scrollPane = new JScrollPane(matrixTextArea[i][j]);
                 panel.add(scrollPane);
 
-                textArea.setText("0.0");
+                matrixTextArea[i][j].setText("0.0");
 
-                double value = Double.parseDouble(textArea.getText());
+
+                double value = Double.parseDouble(matrixTextArea[i][j].getText());
                 matrix[i][j] = value;
 
-                textArea.getDocument().addDocumentListener(new DocumentListener() {
+              }
+            }
+
+                updateMatrix.addActionListener(new ActionListener() {
                     @Override
-                    public void insertUpdate(DocumentEvent e) {
-
-                    }
-
-                    @Override
-                    public void removeUpdate(DocumentEvent e) {
-
-                    }
-
-                    @Override
-                    public void changedUpdate(DocumentEvent e) {
-
+                    public void actionPerformed(ActionEvent e) {
+                        for (int i = 0; i < row; i++) {
+                            for (int j = 0; j < column; j++) {
+                                matrix[i][j] = Double.parseDouble(matrixTextArea[i][j].getText());
+                            }
+                        }
+                        System.out.println("Updated");
                     }
                 });
-            }
-        }
 
-        display.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                for (int i = 0; i < row; i++) {
-                    for (int j = 0; j < column; j++) {
-                        System.out.println("Index " + i + " " + j + " == " + matrix[i][j]);
+                display.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        for (int i = 0; i < row; i++) {
+                            for (int j = 0; j < column; j++) {
+                                System.out.println("Index " + i + " " + j + " == " + matrix[i][j]);
+                            }
+                        }
                     }
-                }
+                });
+
+                RREF.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        matrixTextArea[0][0].setText("1000");
+                        System.out.println("RREF YAY!");
+
+                        for (int i = 0; i < row; i++) {
+                            for (int j = 0; j < column; j++) {
+                                matrix[i][j] = Double.parseDouble(matrixTextArea[i][j].getText());
+                            }
+                        }
+                    }
+                });
+
+                exit.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        // Action to perform when the button is clicked
+                        System.out.println("Button clicked! Closing the JFrame...");
+                        frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
+                    }
+                });
+
+                frame.setVisible(true);
+                frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+
             }
-        });
-
-
-        RREF.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                System.out.println("RREF YAY!");
-                System.out.println(theMatrix[1][1]);
-            }
-        });
-
-        exit.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // Action to perform when the button is clicked
-                System.out.println("Button clicked! Closing the JFrame...");
-                frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
-            }
-        });
-
-        frame.setVisible(true);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-
-    }
 }
