@@ -96,31 +96,22 @@ public class MatrixMethods {
         return isZeroRow;
     }
 
-    // Not Working
-    public void organize() {
-        //Change -0 to 0
+    public boolean isZeroColumn(int column) {
+        boolean isZeroColumn = true;
         for(int i = 0; i < A.length; i++) {
-            for(int j = 0; j < A[0].length; j++) {
-                if(A[i][j] == 0){ 
-                    A[i][j] = 0;
-                }
-            }
+            if(A[i][column] != 0) isZeroColumn = false;
         }
-
-    // Loop thru each row except last row
-    for(int i = 0;i<A.length-1;i++){
-
-        // If it is a zero-row switch with bottom
-        if (isZeroRow(i)) {
-            for (int j = 0; j < A.length; j++) {
-                if (!isZeroRow(A.length - 1 - j)) {
-                    swapRows(i, A.length - j - 1);
-                    break;
-                }
-            }
-        }
+        return isZeroColumn;
     }
-}
+ 
+    public int countZeroRows() {
+        int count = 0;
+        for(int i = 0; i < A.length; i++) {
+            if(isZeroRow(i)) count++;
+        }
+        return count;
+    }
+
 
 //     /*
 //      * Scalars
@@ -299,6 +290,107 @@ public class MatrixMethods {
         }
     }
 
+
+    public void rref() {
+        organize();
+        int z = countZeroRows();
+
+        //loop through every column
+        for(int i = 0; i < A.length; i++) {
+            //Check if the pivot is 0.
+            if(A[i][i] == 0 && !isZeroColumn(i)) {
+                //Find next non-zero pivot
+                for(int j = i; j < A.length; j++) {
+                    if(A[j][i] != 0) {
+                        swapRows(i,j);
+                        break;
+                    }
+                }
+            }
+
+            //Normalize pivot
+            if(A[i][i] != 0) {
+                double divisor = 1/A[i][i];
+                scaleRow(i,divisor);
+                //eliminate the rest of the rowss
+                for(int j = 0; j < A.length - z; j++) {
+                    if(j != i) addRows(j,i,-A[j][i]);
+                }
+            }
+        }
+        //move 0 rows to the bottom.
+        organize();
+    }
+
+    public void rrefWithSteps() {
+        organize();
+        int z = countZeroRows();
+
+        //loop through every column
+        for(int i = 0; i < A.length; i++) {
+            //Check if the pivot is 0.
+            if(A[i][i] == 0 && !isZeroColumn(i)) {
+                //Find next non-zero pivot
+                for(int j = i; j < A.length; j++) {
+                    if(A[j][i] != 0) {
+                        swapRows(i,j);
+                        display();
+                        System.out.printf("Swap R%d and R%d",i,j);
+                        break;
+                    }
+                }
+            }
+
+            //Normalize pivot
+            if(A[i][i] != 0) {
+                double divisor = 1/A[i][i];
+                scaleRow(i,divisor);
+                display();
+                System.out.printf("Scale R%d by %f", i, divisor);
+                //eliminate the rest of the rowss
+                for(int j = 0; j < A.length - z; j++) {
+                    if(j != i) addRows(j,i,-A[j][i]);
+                    display();
+                    System.out.printf("Add rows R%d and %fR%d",j,-A[j][i],i);
+                }
+            }
+        }
+        
+        //move 0 rows to the bottom.
+        organize();
+    }
+
+    /*
+     * Misc.
+     */
+
+    public void organize() {
+        //Change -0 to 0
+        for(int i = 0; i < A.length; i++) {
+            for(int j = 0; j < A[0].length; j++) {
+                //round
+                A[i][j] = (int)(A[i][j]*10);
+                A[i][j] /= 10;
+                if(A[i][j] == -0) A[i][j] = 0;
+            }
+        }
+        
+        //Move all zero rows to the bottom
+        //Loop thru each row except last.
+        for(int i = 0; i < A.length - 1; i++) {
+            if(isZeroRow(i)) {
+                //Loop thru every other row starting from the bottom, and not including itself
+                for(int j = 1; j <= A.length && j != i; j++) {
+                    if(!isZeroRow(A.length - j)) {
+                        swapRows(A.length - j, i);
+                    }
+                }
+            }
+        }
+    }
+
+
+
     public void updateMatrix(){
         for (int i = 0; i < row; i++) {
             
@@ -388,7 +480,7 @@ public class MatrixMethods {
                                 A[i][j] = Double.parseDouble(matrixTextArea[i][j].getText());
                             }
                         }
-                        swapRows(1,2);
+                        rrefWithSteps();
                     }
                 });
 
