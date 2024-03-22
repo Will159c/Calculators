@@ -1,5 +1,4 @@
 
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -8,114 +7,325 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.beans.PropertyChangeListener;
 import java.util.*;
-import javax.swing.JButton;
-import javax.swing.JFrame;
+
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
 public class MatrixMethods {
     int row;
     int column;
-    double[][] theMatrix;
+    double[][] A;
     Scanner input = new Scanner(System.in);
+    JTextArea[][] matrixTextArea;
+
 
     public MatrixMethods() {
 
-        
         // inputs
         System.out.println("How many rows:");
         this.row = input.nextInt();
         System.out.println("How many columns:");
         this.column = input.nextInt();
 
-
-        this.theMatrix = new double[row][column];
+        this.A = new double[row][column];
+        this.matrixTextArea = new JTextArea[row][column];
+        gridLayout();
 
     }
 
-    public void WriteMatrixValues() {
 
-        int dataEntered = 1;
-        for (int i = 0; i <= row - 1; i++) {
-            for (int j = 0; j <= column - 1; j++) {
-                System.out.println("Enter value for row, column: " + (i + 1) + ", " + (j + 1));
-                dataEntered = input.nextInt();
-                theMatrix[i][j] = dataEntered;
+
+    public void display() {
+        System.out.println("Your Matrix");
+        for (int i = 0; i < A.length; i++) {
+            System.out.println();
+            for (int j = 0; j < A[0].length; j++) {
+                System.out.print(A[i][j] + ", ");
             }
+        }
+        System.out.println();
+    }
+
+//     /*
+//      * Row Operations
+//      */
+
+    public void swapRows(int row1, int row2) {
+        // Make dummy row
+        double[] dummy = new double[A[0].length];
+
+        // Copy row2 to dummy
+        for (int i = 0; i < A[0].length; i++) {
+            dummy[i] = A[row2][i];
+        }
+
+        // Copy row1 to row2
+        for (int i = 0; i < A[0].length; i++) {
+            A[row2][i] = A[row1][i];
+        }
+
+        // Copy dummy to row1
+        for (int i = 0; i < A[0].length; i++) {
+            A[row1][i] = dummy[i];
         }
 
     }
 
-    public void CheckForZeros() {
-        double[] tempRow = new double[row];
-        for (int i = 0; i < theMatrix.length; i++) {
-            for (int j = 0; j < theMatrix[0].length; j++) {
-                if (theMatrix[i][j] == 0) {
-                    tempRow = theMatrix[i];
-                    theMatrix[i] = theMatrix[Math.min(j + 1, row - 1)];
-                    theMatrix[Math.min(j + 1, row - 1)] = tempRow;
+    public void addRows(int row1, int row2, double n) {
+        // Add R1 + nR2
+
+        // Loop through each entry
+        for (int i = 0; i < A[0].length; i++) {
+            A[row1][i] += A[row2][i] * n;
+        }
+    }
+
+    public void scaleRow(int row, double n) {
+        // Loop through every entry in row row
+        for (int i = 0; i < A[0].length; i++) {
+            A[row][i] *= n;
+        }
+    }
+
+    public boolean isZeroRow(int row) {
+        boolean isZeroRow = true;
+        for (int j = 0; j < A[0].length; j++) {
+            if (A[row][j] != 0)
+                isZeroRow = false;
+        }
+        return isZeroRow;
+    }
+
+    // Not Working
+    public void organize() {
+        //Change -0 to 0
+        for(int i = 0; i < A.length; i++) {
+            for(int j = 0; j < A[0].length; j++) {
+                if(A[i][j] == 0){ 
+                    A[i][j] = 0;
                 }
             }
         }
 
-        // for (int r = 0, c = 0; r < row - 1 && c < column - 1; r++, c++) {
+    // Loop thru each row except last row
+    for(int i = 0;i<A.length-1;i++){
 
-        //     if (theMatrix[r][c] == 0) {
+        // If it is a zero-row switch with bottom
+        if (isZeroRow(i)) {
+            for (int j = 0; j < A.length; j++) {
+                if (!isZeroRow(A.length - 1 - j)) {
+                    swapRows(i, A.length - j - 1);
+                    break;
+                }
+            }
+        }
+    }
+}
 
-        //         for (int r1 = 0; r1 < theMatrix.length - 1; r1++) {
+//     /*
+//      * Scalars
+//      */
 
-        //             if (theMatrix[r1][c] != 0) {
+    public double det() {
+        //Check if it is square
+        if(A.length == A[0].length) {
+            double[][] B = A;
+            double det = 0;
 
-        //                 tempRow = theMatrix[r];
-        //                 theMatrix[r][c] = theMatrix[r1][c];
-        //                 theMatrix[r1] = tempRow;
-        //                 break;
-        //             }
-        //         }
-        //     }
-        // }
+            //Trivial 1x1
+            if(A.length == 1) {
+                det = A[0][0];
+            }
 
+            //Trivial 2x2
+            if(A.length == 2) {
+                det = (A[0][0]*A[1][1]) - (A[0][1]*A[1][0]);
+            }
+            
+            //NxN 
+            if(A.length > 2) {
+                for(int i = 0; i < A.length; i++) {
+                    submatrix(0,i);
+                    det = det + Math.pow(-1, i) * (B[0][i]) * det();
+                    //Reset A:
+                    A = B;
+                }
+            }
+            return det;
+        }
+        else {
+            System.out.println("Undefined");
+            return 0;
+        } 
     }
 
-    public void RREF() {
-        // check for zeros
-       CheckForZeros();
-
-       double divisor = 1;
-       double cell;
-       for (int currentRow = 0; currentRow < theMatrix.length-1; currentRow++) {
-            divisor = theMatrix[currentRow][currentRow];
-            for(int currentColumn = 0; currentColumn < theMatrix[0].length; currentColumn++){
-                cell = theMatrix[currentRow][currentColumn] / divisor;
-                theMatrix[currentRow][currentColumn] = Math.ceil(cell * 100)/100;
+    public double trace() {
+        //Check if A is square
+        if(A.length == A[0].length) {
+            double ans = 0;
+            for(int i = 0; i < A.length; i++) {
+                ans = ans + A[i][i];
             }
-            divisor = theMatrix[currentRow+1][currentRow+1];
-            for (int currentColumn1 = 0; currentColumn1 < theMatrix.length; currentColumn1++) {
-                cell = theMatrix[currentRow][currentColumn1] / divisor;
-                theMatrix[currentRow + 1][currentColumn1] = Math.ceil(cell * 100)/100;
-            }
-            for (int currentColumn = 0; currentColumn < theMatrix.length; currentColumn++) {
-                cell = theMatrix[currentRow][currentColumn] - theMatrix[currentRow + 1][currentColumn];
-                theMatrix[currentRow + 1][currentColumn] = Math.ceil(cell * 100)/100;
-            }
-
-       }
-        // RREF
-    }
-
-    public void printMatrix() {
-        System.out.println("Your Matrix: ");
-        for (int i = 0; i < theMatrix.length; i++) {
-            for (int j = 0; j < theMatrix[0].length; j++) {
-                System.out.print(theMatrix[i][j] + "\t");
-            }
-            System.out.println();
+            return ans;
+        }
+        else {
+            System.out.println("Undefined");
+            return 0;
         }
     }
 
+    /*
+     * Matrix Operations
+     */
+
+    public void multiplyBy(double[][] B) {
+        //Check if A's height == B's Width
+        if(A[0].length == B.length) {
+            double[][] ans = new double[A.length][B[0].length];
+            for(int i = 0; i < A.length; i++) {
+                for(int j = 0; j < B[0].length; j++) {
+                    ans[i][j] = 0;
+                    for(int k = 0; k < B.length; k++) {
+                        ans[i][j] += A[i][k]*B[k][j];
+                    }
+                }
+            }
+            A = ans;
+        }
+        else {
+            //Error Message
+            System.out.println("Undefined");
+        }
+    }
+
+    public void multiplyBy(double k) {
+        double[][] ans = new double[A.length][A[0].length];
+        
+        for(int i = 0; i < A.length; i++) {
+            for(int j = 0; j < A[0].length; j++) {
+                ans[i][j] = A[i][j] * k;
+            }
+        }
+
+        A = ans;
+    }
+
+    public void add(double[][] B) {
+        //Check if sizes match
+        if(A.length == B.length && A[0].length == B[0].length) {
+            //Define Answer Matrix
+            double[][] ans = new double[A.length][A[0].length];
+
+            //Loop through each entry
+            for(int i = 0; i < A.length; i++) {
+                for(int j = 0; j < A[0].length; j++) {
+                    ans[i][j] = A[i][j] + B[i][j];
+                }
+            }
+
+            A = ans;
+        } 
+        else{
+            //Error Message
+            System.out.println("Undefined");
+        }
+    }
+
+    public void transpose() {
+        double[][] ans = new double[A[0].length][A.length];
+
+        for(int i = 0; i < A.length; i++) {
+            for(int j = 0; j < A[0].length; j++) {
+                ans[j][i] = A[i][j];
+            }
+        }
+
+        A = ans;
+    }
+
+    public void submatrix(int row, int column) {
+        //Check if it is square
+        if(A.length == A[0].length) {
+
+            //Check if size is 2x2 or more
+            if(A.length > 1) {
+                double[][] ans = new double[A.length-1][A[0].length - 1];
+
+                //Assign values
+                for(int i = 0, k = 0; i < A.length && k < ans.length; i++) {
+                    if(i != row) {
+                        for(int j = 0, l = 0; j < A.length && l < ans.length; j++) {
+                            if(j != column) {
+                                ans[k][l] = A[i][j];
+                                l++;
+                            }
+                        }
+                        k++;
+                    } 
+                }
+                A = ans;
+            }
+        }
+    }
+
+    public void cofactor() {
+        //Check if square
+        if (A.length == A[0].length) {
+
+            double[][] ans = new double[A.length][A[0].length];
+    
+            for(int i = 0; i < A.length; i++) {
+                for(int j = 0 ; j < A.length; j++) {
+                    submatrix(i, j);
+                    ans[i][j] = Math.pow(-1 , i) * Math.pow(-1, j) * det();
+                }
+            }
+                A = ans;
+            }   
+    }
+
+    public void adjoint() {
+        cofactor();
+        transpose();
+    }
+
+    public void invert() {
+        if(det() != 0) {
+            adjoint();
+            multiplyBy(1/(det()));
+        }
+        else {
+            System.out.println("Undefined");
+        }
+    }
+
+    public void updateMatrix(){
+        for (int i = 0; i < row; i++) {
+            
+        for (int j = 0; j < column; j++) {
+            A[i][j] = Double.parseDouble(matrixTextArea[i][j].getText());
+        }
+    }
+        System.out.println("Updated");
+    }
+
+    public void printMatrix(){
+        System.out.println("Your Matrix: ");
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < column; j++) {
+                System.out.print(A[i][j] + "\t");
+            }
+            System.out.println();
+        }
+
+    }
+
+
+
+
     public void gridLayout() {
         JFrame frame = new JFrame();
-        JTextArea textArea = null;
+        // JTextArea textArea = null;
         JPanel panel = new JPanel(new GridLayout(row, column));
         frame.setSize(600, 400);
         frame.add(panel);
@@ -131,8 +341,8 @@ public class MatrixMethods {
         frame.add(display, BorderLayout.EAST);
 
 
-        double[][] matrix = new double[row][column];
-        JTextArea[][] matrixTextArea = new JTextArea[row][column];
+        // double[][] matrix = new double[row][column];
+        // JTextArea[][] matrixTextArea = new JTextArea[row][column];
 
 
         for (int i = 0; i < row; i++) {
@@ -145,7 +355,7 @@ public class MatrixMethods {
 
 
                 double value = Double.parseDouble(matrixTextArea[i][j].getText());
-                matrix[i][j] = value;
+                A[i][j] = value;
 
               }
             }
@@ -153,23 +363,17 @@ public class MatrixMethods {
                 updateMatrix.addActionListener(new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
-                        for (int i = 0; i < row; i++) {
-                            for (int j = 0; j < column; j++) {
-                                matrix[i][j] = Double.parseDouble(matrixTextArea[i][j].getText());
-                            }
-                        }
-                        System.out.println("Updated");
+                        
+                            updateMatrix();
+
                     }
                 });
 
                 display.addActionListener(new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
-                        for (int i = 0; i < row; i++) {
-                            for (int j = 0; j < column; j++) {
-                                System.out.println("Index " + i + " " + j + " == " + matrix[i][j]);
-                            }
-                        }
+
+                        printMatrix();
                     }
                 });
 
@@ -179,11 +383,12 @@ public class MatrixMethods {
                         matrixTextArea[0][0].setText("1000");
                         System.out.println("RREF YAY!");
 
-                        for (int i = 0; i < row; i++) {
-                            for (int j = 0; j < column; j++) {
-                                matrix[i][j] = Double.parseDouble(matrixTextArea[i][j].getText());
+                        for (int i = 0; i < row-1; i++) {
+                            for (int j = 0; j < column-1; j++) {
+                                A[i][j] = Double.parseDouble(matrixTextArea[i][j].getText());
                             }
                         }
+                        swapRows(1,2);
                     }
                 });
 
@@ -193,12 +398,17 @@ public class MatrixMethods {
                         // Action to perform when the button is clicked
                         System.out.println("Button clicked! Closing the JFrame...");
                         frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
+                    
                     }
                 });
 
                 frame.setVisible(true);
                 frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            
+
+    }
 
 
-            }
+
+
 }
