@@ -65,16 +65,18 @@ public class HubFrame {
         newMatrix.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                k[0]++;
+                if (!Objects.equals(rows2.getText(), "") || !Objects.equals(columns2.getText(), "")) {
 
-                if(k[0] == 1)  {
-                    one[0] = new MatrixMethods(Integer.parseInt(rows2.getText()),
-                            Integer.parseInt(columns2.getText()));
-                } else if(k[0] == 2) {
-                    two[0] = new MatrixMethods(Integer.parseInt(rows2.getText()),
-                            Integer.parseInt(columns2.getText()));
-                } else {
-                    return;
+
+                    k[0]++;
+
+                    if (k[0] == 1) {
+                        one[0] = new MatrixMethods(Integer.parseInt(rows2.getText()),
+                                Integer.parseInt(columns2.getText()));
+                    } else if (k[0] == 2) {
+                        two[0] = new MatrixMethods(Integer.parseInt(rows2.getText()),
+                                Integer.parseInt(columns2.getText()));
+                    }
                 }
             }
         });
@@ -82,6 +84,8 @@ public class HubFrame {
         multiply.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+
+
                 if(one[0] != null && two[0] != null) {
                     one[0].updateMatrix();
                     two[0].updateMatrix();
