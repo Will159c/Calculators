@@ -19,13 +19,11 @@ public class MatrixMethods {
     JTextArea[][] matrixTextArea;
 
 
-    public MatrixMethods() {
+    public MatrixMethods(int row, int column) {
 
         // inputs
-        System.out.println("How many rows:");
-        this.row = input.nextInt();
-        System.out.println("How many columns:");
-        this.column = input.nextInt();
+        this.row = row;
+        this.column = column;
 
         this.A = new double[row][column];
         this.matrixTextArea = new JTextArea[row][column];
@@ -391,15 +389,34 @@ public class MatrixMethods {
 
 
 
+
+
+
+
+
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    //Everything below this point is data processing, buttons, layouts and imported methods. This is what I worked on 5/2/2024
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+    public double[][] getMatrix() {
+        return A;
+    }
+
+
     public void updateMatrix(){
         for (int i = 0; i < row; i++) {
             
-        for (int j = 0; j < column; j++) {
-            A[i][j] = Double.parseDouble(matrixTextArea[i][j].getText());
+            for (int j = 0; j < column; j++) {
+                A[i][j] = Double.parseDouble(matrixTextArea[i][j].getText());
+            }
         }
     }
-        System.out.println("Updated");
-    }
+
+
 
     public void printMatrix(){
         System.out.println("Your Matrix: ");
@@ -417,24 +434,20 @@ public class MatrixMethods {
 
     public void gridLayout() {
         JFrame frame = new JFrame();
-        // JTextArea textArea = null;
         JPanel panel = new JPanel(new GridLayout(row, column));
         frame.setSize(600, 400);
         frame.add(panel);
 
-        JButton exit = new JButton("Exit");
-        JButton RREF = new JButton("RREF");
-        JButton display = new JButton("display");
-        JButton updateMatrix = new JButton("Update");
+        // Get the screen size
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        int screenHeight = screenSize.height;
+        int screenWidth = screenSize.width;
 
-        frame.add(updateMatrix, BorderLayout.WEST);
-        frame.add(exit, BorderLayout.NORTH);
-        frame.add(RREF, BorderLayout.SOUTH);
-        frame.add(display, BorderLayout.EAST);
+        // Calculate the position for the top right corner
+        int x = screenWidth - frame.getWidth();
+        int y = 0;  // Align with the top of the screen
 
-
-        // double[][] matrix = new double[row][column];
-        // JTextArea[][] matrixTextArea = new JTextArea[row][column];
+        frame.setLocation(x, y);
 
 
         for (int i = 0; i < row; i++) {
@@ -443,7 +456,7 @@ public class MatrixMethods {
                 JScrollPane scrollPane = new JScrollPane(matrixTextArea[i][j]);
                 panel.add(scrollPane);
 
-                matrixTextArea[i][j].setText("0.0");
+                matrixTextArea[i][j].setText("0");
 
 
                 double value = Double.parseDouble(matrixTextArea[i][j].getText());
@@ -452,53 +465,13 @@ public class MatrixMethods {
               }
             }
 
-                updateMatrix.addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        
-                            updateMatrix();
-
-                    }
-                });
-
-                display.addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-
-                        printMatrix();
-                    }
-                });
-
-                RREF.addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        matrixTextArea[0][0].setText("1000");
-                        System.out.println("RREF YAY!");
-
-                        for (int i = 0; i < row-1; i++) {
-                            for (int j = 0; j < column-1; j++) {
-                                A[i][j] = Double.parseDouble(matrixTextArea[i][j].getText());
-                            }
-                        }
-                        rrefWithSteps();
-                    }
-                });
-
-                exit.addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        // Action to perform when the button is clicked
-                        System.out.println("Button clicked! Closing the JFrame...");
-                        frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
-                    
-                    }
-                });
-
                 frame.setVisible(true);
                 frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             
 
     }
+
+
 
 
 
