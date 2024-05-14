@@ -6,11 +6,13 @@ public class answerBox {
     int row;
     int column;
     double[][] matrix;
+    String label;
 
-    public answerBox(int row, int column, double[][] matrix) {
+    public answerBox(int row, int column, double[][] matrix, String label) {
         this.row = row;
         this.column = column;
         this.matrix = matrix;
+        this.label = label;
 
         this.answerArea = new JTextArea[row][column];
         gridLayout();
@@ -30,7 +32,7 @@ public class answerBox {
         int x = screenWidth - frame.getWidth();
         int y = screenHeight - frame.getHeight();
 
-        JLabel answer = new JLabel("Answer");
+        JLabel answer = new JLabel(label);
         frame.add(answer, BorderLayout.NORTH);
 
         frame.setLocation(x, y);

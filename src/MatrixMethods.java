@@ -17,6 +17,8 @@ public class MatrixMethods {
     double[][] A;
     Scanner input = new Scanner(System.in);
     JTextArea[][] matrixTextArea;
+    public boolean checked = false;
+    JFrame frame = new JFrame();
 
 
     public MatrixMethods(int row, int column) {
@@ -220,6 +222,27 @@ public class MatrixMethods {
         }
     }
 
+    public void subtract(double[][] B) {
+        //Check if sizes match
+        if(A.length == B.length && A[0].length == B[0].length) {
+            //Define Answer Matrix
+            double[][] ans = new double[A.length][A[0].length];
+
+            //Loop through each entry
+            for(int i = 0; i < A.length; i++) {
+                for(int j = 0; j < A[0].length; j++) {
+                    ans[i][j] = A[i][j] - B[i][j];
+                }
+            }
+
+            A = ans;
+        } 
+        else{
+            //Error Message
+            System.out.println("Undefined");
+        }
+    }
+
     public void transpose() {
         double[][] ans = new double[A[0].length][A.length];
 
@@ -393,8 +416,6 @@ public class MatrixMethods {
 
 
 
-
-
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     //Everything below this point is data processing, buttons, layouts and imported methods. This is what I worked on 5/2/2024
@@ -433,7 +454,7 @@ public class MatrixMethods {
 
 
     public void gridLayout() {
-        JFrame frame = new JFrame();
+        
         JPanel panel = new JPanel(new GridLayout(row, column));
         frame.setSize(600, 400);
         frame.add(panel);
@@ -468,9 +489,11 @@ public class MatrixMethods {
                 frame.setVisible(true);
                 frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             
-
     }
 
+    public Point getpPosition(){
+        return frame.getLocation();
+    }
 
 
 

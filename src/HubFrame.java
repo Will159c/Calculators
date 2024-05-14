@@ -14,94 +14,155 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
 public class HubFrame {
-    public static void HUB(){
+    public static void HUB() {
+
         JFrame frame = new JFrame();
         JPanel panel = new JPanel(new GridLayout(2, 2));
         frame.setSize(600, 400);
-
-
-        frame.add(panel);
-
+        JTabbedPane NewMatrixTab = new JTabbedPane();
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        //////////////Everything I added or changed for actual visuals//////////////////////////////////////////////////
+        ////////////// Everything I added or changed for actual
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////////// visuals//////////////////////////////////////////////////
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        JButton newMatrix = new JButton("New Matrix");
+        JButton newMatrix = new JButton("Create Matrix");
         JButton multiply = new JButton("Multiply");
 
-        frame.add(multiply, BorderLayout.NORTH);
-        frame.add(newMatrix, BorderLayout.SOUTH);
+        // panel.add(multiply, BorderLayout.NORTH);
+        panel.add(newMatrix);
 
-
-        JPanel panel3 = new JPanel();
-        GridLayout gl = new GridLayout(4,2); // 4 rows, 2 columns
+        GridLayout gl = new GridLayout(5, 1); // 4 rows, 2 columns
         panel.setLayout(gl);
 
-        JLabel rows = new JLabel("Rows");
+        JLabel rows = new JLabel("Enter Rows: ");
+        rows.setHorizontalTextPosition(JLabel.CENTER);
+        rows.setVerticalTextPosition(JLabel.CENTER);
         JTextArea rows2 = new JTextArea();
         panel.add(rows);
         panel.add(rows2);
-        JLabel columns = new JLabel("Columns");
+        JLabel columns = new JLabel("Enter Columns: ");
         JTextArea columns2 = new JTextArea();
         panel.add(columns);
         panel.add(columns2);
 
+        /*
+         * Oppertion panel
+         */
+        JPanel OpperationsPane = new JPanel(new GridLayout(4, 2));
 
+        JCheckBox MatrixOneB = new JCheckBox("Matrix One");
+        JCheckBox MatrixTwoB = new JCheckBox("Matrix Two");
+        JButton AdditionB = new JButton("Add");
+        JButton MultiplyB = new JButton("Multiply");
+        JButton SubtractionB = new JButton("Subtract");
+        JButton RREFB = new JButton("RREF");
+        JButton DeterminantB = new JButton("Det()");
+        JButton InverseB = new JButton("Inverse Of");
 
+        OpperationsPane.add(MatrixOneB);
+        OpperationsPane.add(MatrixTwoB);
+        OpperationsPane.add(AdditionB);
+        OpperationsPane.add(SubtractionB);
+        OpperationsPane.add(RREFB);
+        OpperationsPane.add(DeterminantB);
+        OpperationsPane.add(MultiplyB);
+        OpperationsPane.add(InverseB);
 
+        // adding tabs to the hub
+        NewMatrixTab.add(panel, "New Matrix");
+        NewMatrixTab.add(OpperationsPane, "Opperations");
+        frame.getContentPane().add(NewMatrixTab);
 
-//end
+        // frame.add(panel);
+
+        // end
         frame.setVisible(true);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
+        // Action Listeners
 
-
-//Action Listeners
-
-        final int[] k = {0};
-        final MatrixMethods[] one = {null};
-        final MatrixMethods[] two = {null};
+        final int[] k = { 0 };
+        final MatrixMethods[] one = { null };
+        final MatrixMethods[] two = { null };
         newMatrix.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (!Objects.equals(rows2.getText(), "") || !Objects.equals(columns2.getText(), "")) {
+                k[0]++;
 
-
-                    k[0]++;
-
-                    if (k[0] == 1) {
-                        one[0] = new MatrixMethods(Integer.parseInt(rows2.getText()),
-                                Integer.parseInt(columns2.getText()));
-                    } else if (k[0] == 2) {
-                        two[0] = new MatrixMethods(Integer.parseInt(rows2.getText()),
-                                Integer.parseInt(columns2.getText()));
-                    }
+                if (k[0] == 1) {
+                    one[0] = new MatrixMethods(Integer.parseInt(rows2.getText()),
+                            Integer.parseInt(columns2.getText()));
+                } else if (k[0] == 2) {
+                    two[0] = new MatrixMethods(Integer.parseInt(rows2.getText()),
+                            Integer.parseInt(columns2.getText()));
+                } else {
+                    return;
                 }
             }
         });
 
-        multiply.addActionListener(new ActionListener() {
+        MultiplyB.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
-
-                if(one[0] != null && two[0] != null) {
+                if (one[0] != null && two[0] != null) {
                     one[0].updateMatrix();
                     two[0].updateMatrix();
 
-
-
                     double[][] temp = multiplyMatrices(one[0].getMatrix(), two[0].getMatrix());
-                    answerBox answer = new answerBox(temp.length, temp.length, temp);
+                    answerBox answer = new answerBox(temp.length, temp[0].length, temp, "Multiplcation Answer");
 
                 }
             }
         });
+        RREFB.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                one[0].updateMatrix();
+                one[0].printMatrix();
+                double[][] temp;
+                MatrixMethods tempMM = new MatrixMethods(one[0].row, one[0].column);
+                System.out.println("listener");
 
+                if (MatrixOneB.isSelected() && !MatrixTwoB.isSelected()) {
+
+                    tempMM.rref();
+                    temp = tempMM.A;
+                    printMatrix(one[0].A);
+                    answerBox answer = new answerBox(temp.length, temp[0].length, temp, "RREF Answer");
+
+                }
+            }
+        });
+        SubtractionB.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                one[0].updateMatrix();
+                two[0].updateMatrix();
+                if (MatrixOneB.isSelected() && MatrixTwoB.isSelected()) {
+                    MatrixMethods tempMM;
+
+                    Point pointOne = one[0].getpPosition();
+                    Point pointTwo = two[0].getpPosition();
+                    if (pointOne.x > pointTwo.x) {
+                        tempMM = new MatrixMethods(one[0].row, one[0].column);
+                        tempMM.subtract(two[0].A);
+                        printMatrix(tempMM.A);
+                        answerBox answer = new answerBox(tempMM.A.length, tempMM.A[0].length, tempMM.A, "RREF Answer");
+                    }else if(pointOne.x < pointTwo.x){
+                        tempMM = new MatrixMethods(two[0].row, two[0].column);
+                        tempMM.subtract(one[0].A);
+                        printMatrix(tempMM.A);
+                        answerBox answer = new answerBox(tempMM.A.length, tempMM.A[0].length, tempMM.A, "RREF Answer");
+                    }
+
+                } else {
+                    System.out.println("Please select two matrices");
+                }
+            }
+        });
 
     }
-
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -135,8 +196,6 @@ public class HubFrame {
             System.out.println();
         }
     }
-
-
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
