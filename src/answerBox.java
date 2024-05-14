@@ -51,7 +51,6 @@ public class answerBox {
         }
 
         frame.setVisible(true);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 
     }

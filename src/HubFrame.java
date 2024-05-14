@@ -16,20 +16,16 @@ import javax.swing.event.DocumentListener;
 public class HubFrame {
     public static void HUB() {
 
+        MatrixMethods matrixMethods = new MatrixMethods();
+
         JFrame frame = new JFrame();
         JPanel panel = new JPanel(new GridLayout(2, 2));
         frame.setSize(600, 400);
         JTabbedPane NewMatrixTab = new JTabbedPane();
 
-        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        ////////////// Everything I added or changed for actual
-        //////////////////////////////////////////////////////////////////////////////////////////////////////////////// visuals//////////////////////////////////////////////////
-        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
         JButton newMatrix = new JButton("Create Matrix");
         JButton multiply = new JButton("Multiply");
 
-        // panel.add(multiply, BorderLayout.NORTH);
         panel.add(newMatrix);
 
         GridLayout gl = new GridLayout(5, 1); // 4 rows, 2 columns
@@ -57,17 +53,13 @@ public class HubFrame {
         JButton MultiplyB = new JButton("Multiply");
         JButton SubtractionB = new JButton("Subtract");
         JButton RREFB = new JButton("RREF");
-        JButton DeterminantB = new JButton("Det()");
-        JButton InverseB = new JButton("Inverse Of");
 
         OpperationsPane.add(MatrixOneB);
         OpperationsPane.add(MatrixTwoB);
         OpperationsPane.add(AdditionB);
         OpperationsPane.add(SubtractionB);
         OpperationsPane.add(RREFB);
-        OpperationsPane.add(DeterminantB);
         OpperationsPane.add(MultiplyB);
-        OpperationsPane.add(InverseB);
 
         // adding tabs to the hub
         NewMatrixTab.add(panel, "New Matrix");
@@ -83,21 +75,19 @@ public class HubFrame {
         // Action Listeners
 
         final int[] k = { 0 };
-        final MatrixMethods[] one = { null };
-        final MatrixMethods[] two = { null };
+        final newMatrix[] one = { null };
+        final newMatrix[] two = { null };
         newMatrix.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 k[0]++;
 
                 if (k[0] == 1) {
-                    one[0] = new MatrixMethods(Integer.parseInt(rows2.getText()),
-                            Integer.parseInt(columns2.getText()));
+                    one[0] = new newMatrix(Integer.parseInt(rows2.getText()),
+                            Integer.parseInt(columns2.getText()), 1);
                 } else if (k[0] == 2) {
-                    two[0] = new MatrixMethods(Integer.parseInt(rows2.getText()),
-                            Integer.parseInt(columns2.getText()));
-                } else {
-                    return;
+                    two[0] = new newMatrix(Integer.parseInt(rows2.getText()),
+                            Integer.parseInt(columns2.getText()), 2);
                 }
             }
         });
@@ -109,51 +99,57 @@ public class HubFrame {
                     one[0].updateMatrix();
                     two[0].updateMatrix();
 
-                    double[][] temp = multiplyMatrices(one[0].getMatrix(), two[0].getMatrix());
+                    double[][] temp = matrixMethods.multiplyMatrices(one[0].getMatrix(), two[0].getMatrix());
                     answerBox answer = new answerBox(temp.length, temp[0].length, temp, "Multiplcation Answer");
 
                 }
             }
         });
-        RREFB.addActionListener(new ActionListener() {
+
+        AdditionB.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                one[0].updateMatrix();
-                one[0].printMatrix();
-                double[][] temp;
-                MatrixMethods tempMM = new MatrixMethods(one[0].row, one[0].column);
-                System.out.println("listener");
+                if (one[0] != null && two[0] != null) {
+                    one[0].updateMatrix();
+                    two[0].updateMatrix();
 
-                if (MatrixOneB.isSelected() && !MatrixTwoB.isSelected()) {
+                    if (MatrixOneB.isSelected() && MatrixTwoB.isSelected()) {
+                        newMatrix tempMM;
 
-                    tempMM.rref();
-                    temp = tempMM.A;
-                    printMatrix(one[0].A);
-                    answerBox answer = new answerBox(temp.length, temp[0].length, temp, "RREF Answer");
+                        Point pointOne = one[0].getpPosition();
+                        Point pointTwo = two[0].getpPosition();
+                        if (pointOne.x > pointTwo.x) {
+                            double[][] temp = matrixMethods.addMatrices(one[0].getMatrix(), two[0].getMatrix());
+                            answerBox answer = new answerBox(temp.length, temp[0].length, temp, "Addition Answer");
 
+                        }else if(pointOne.x < pointTwo.x){
+                            double[][] temp = matrixMethods.addMatrices(two[0].getMatrix(), one[0].getMatrix());
+                            answerBox answer = new answerBox(temp.length, temp[0].length, temp, "Addition Answer");
+                        }
+
+                    } else {
+                        System.out.println("Please select two matrices");
+                    }
                 }
             }
         });
+
         SubtractionB.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 one[0].updateMatrix();
                 two[0].updateMatrix();
                 if (MatrixOneB.isSelected() && MatrixTwoB.isSelected()) {
-                    MatrixMethods tempMM;
+                    newMatrix tempMM;
 
                     Point pointOne = one[0].getpPosition();
                     Point pointTwo = two[0].getpPosition();
-                    if (pointOne.x > pointTwo.x) {
-                        tempMM = new MatrixMethods(one[0].row, one[0].column);
-                        tempMM.subtract(two[0].A);
-                        printMatrix(tempMM.A);
-                        answerBox answer = new answerBox(tempMM.A.length, tempMM.A[0].length, tempMM.A, "RREF Answer");
-                    }else if(pointOne.x < pointTwo.x){
-                        tempMM = new MatrixMethods(two[0].row, two[0].column);
-                        tempMM.subtract(one[0].A);
-                        printMatrix(tempMM.A);
-                        answerBox answer = new answerBox(tempMM.A.length, tempMM.A[0].length, tempMM.A, "RREF Answer");
+                    if (pointOne.x < pointTwo.x) {
+                        double[][] temp = matrixMethods.subtractMatrices(one[0].getMatrix(), two[0].getMatrix());
+                        answerBox answer = new answerBox(temp.length, temp[0].length, temp, "Subtraction Answer");
+                    }else if(pointOne.x > pointTwo.x){
+                        double[][] temp = matrixMethods.subtractMatrices(two[0].getMatrix(), one[0].getMatrix());
+                        answerBox answer = new answerBox(temp.length, temp[0].length, temp, "Subtraction Answer");
                     }
 
                 } else {
@@ -162,44 +158,24 @@ public class HubFrame {
             }
         });
 
-    }
 
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    // 5/2/2024 MULTIPLICATION
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    public static double[][] multiplyMatrices(double[][] matrix1, double[][] matrix2) {
-        if (matrix1[0].length != matrix2.length) {
-            throw new IllegalArgumentException("Matrix multiplication is not possible");
-        }
-
-        double[][] result = new double[matrix1.length][matrix2[0].length];
-
-        for (int i = 0; i < matrix1.length; i++) {
-            for (int j = 0; j < matrix2[0].length; j++) {
-                for (int k = 0; k < matrix1[0].length; k++) {
-                    result[i][j] += matrix1[i][k] * matrix2[k][j];
+        RREFB.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                one[0].updateMatrix();
+                two[0].updateMatrix();
+                if (MatrixOneB.isSelected()) {
+                    double[][] temp = matrixMethods.computeRREF(one[0].getMatrix());
+                    answerBox answer = new answerBox(temp.length, temp[0].length, temp, "Subtraction Answer");
+                }else if(MatrixTwoB.isSelected()){
+                    double[][] temp = matrixMethods.computeRREF(two[0].getMatrix());
+                    answerBox answer = new answerBox(temp.length, temp[0].length, temp, "Subtraction Answer");
+                } else {
+                    System.out.println("Please select one matrix");
                 }
             }
-        }
-
-        return result;
+        });
     }
 
-    public static void printMatrix(double[][] matrix) {
-        for (double[] row : matrix) {
-            for (double element : row) {
-                System.out.print(element + " ");
-            }
-            System.out.println();
-        }
-    }
 
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    // 5/2/2024 MULTIPLICATION
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }
