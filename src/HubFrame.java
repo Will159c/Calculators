@@ -99,9 +99,22 @@ public class HubFrame {
                     one[0].updateMatrix();
                     two[0].updateMatrix();
 
-                    double[][] temp = matrixMethods.multiplyMatrices(one[0].getMatrix(), two[0].getMatrix());
-                    answerBox answer = new answerBox(temp.length, temp[0].length, temp, "Multiplcation Answer");
+                    Point pointOne = one[0].getpPosition();
+                    Point pointTwo = two[0].getpPosition();
+                    if (MatrixOneB.isSelected() && MatrixTwoB.isSelected()) {
 
+                        if (pointOne.x > pointTwo.x) {
+                            double[][] temp = matrixMethods.multiplyMatrices(one[0].getMatrix(), two[0].getMatrix());
+                            answerBox answer = new answerBox(temp.length, temp[0].length, temp, "Multiplcation Answer");
+
+                        }else if(pointOne.x < pointTwo.x){
+                            double[][] temp = matrixMethods.multiplyMatrices(two[0].getMatrix(), one[0].getMatrix());
+                            answerBox answer = new answerBox(temp.length, temp[0].length, temp, "Multiplcation Answer");
+                        }
+
+                    } else {
+                        System.out.println("Please select two matrices");
+                    }
                 }
             }
         });
@@ -164,10 +177,10 @@ public class HubFrame {
             public void actionPerformed(ActionEvent e) {
                 one[0].updateMatrix();
                 two[0].updateMatrix();
-                if (MatrixOneB.isSelected()) {
+                if (MatrixOneB.isSelected() && !MatrixTwoB.isSelected()) {
                     double[][] temp = matrixMethods.computeRREF(one[0].getMatrix());
                     answerBox answer = new answerBox(temp.length, temp[0].length, temp, "Subtraction Answer");
-                }else if(MatrixTwoB.isSelected()){
+                }else if(MatrixTwoB.isSelected() && !MatrixOneB.isSelected()){
                     double[][] temp = matrixMethods.computeRREF(two[0].getMatrix());
                     answerBox answer = new answerBox(temp.length, temp[0].length, temp, "Subtraction Answer");
                 } else {
