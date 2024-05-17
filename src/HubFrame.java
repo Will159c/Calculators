@@ -80,14 +80,15 @@ public class HubFrame {
         newMatrix.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                k[0]++;
-
-                if (k[0] == 1) {
-                    one[0] = new newMatrix(Integer.parseInt(rows2.getText()),
-                            Integer.parseInt(columns2.getText()), 1);
-                } else if (k[0] == 2) {
-                    two[0] = new newMatrix(Integer.parseInt(rows2.getText()),
-                            Integer.parseInt(columns2.getText()), 2);
+                if(Integer.parseInt(rows2.getText()) > 0 && Integer.parseInt(columns2.getText()) > 0) {
+                    k[0]++;
+                    if (k[0] == 1) {
+                        one[0] = new newMatrix(Integer.parseInt(rows2.getText()),
+                                Integer.parseInt(columns2.getText()), 1);
+                    } else if (k[0] == 2) {
+                        two[0] = new newMatrix(Integer.parseInt(rows2.getText()),
+                                Integer.parseInt(columns2.getText()), 2);
+                    }
                 }
             }
         });

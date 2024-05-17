@@ -149,7 +149,8 @@ public class MatrixMethods {
                     for (int k = 0; k < numCols; k++) {
                         rrefMatrix[j][k] -= lv2 * rrefMatrix[row][k];
                     }
-                    System.out.println("Step " + (row + 1) + ": Subtract " + lv2 + " times row " + (row + 1) + " from row " + (j + 1));
+                    System.out.println("Step " + (row + 1) + ": Subtract " + lv2 + " times row "
+                            + (row + 1) + " from row " + (j + 1));
                 }
             }
             lead++;
