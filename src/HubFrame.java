@@ -104,13 +104,22 @@ public class HubFrame {
                     Point pointTwo = two[0].getpPosition();
                     if (MatrixOneB.isSelected() && MatrixTwoB.isSelected()) {
 
-                        if (pointOne.x > pointTwo.x) {
-                            double[][] temp = matrixMethods.multiplyMatrices(one[0].getMatrix(), two[0].getMatrix());
-                            answerBox answer = new answerBox(temp.length, temp[0].length, temp, "Multiplcation Answer");
+                        if (pointOne.x < pointTwo.x) {
+                            try{
+                                double[][] temp = matrixMethods.multiplyMatrices(one[0].getMatrix(), two[0].getMatrix());
+                                answerBox answer = new answerBox(temp.length, temp[0].length, temp, "Multiplcation Answer");
+                            }catch(IllegalArgumentException f){
+                                System.out.println("Invalid opperation- columns don't match rows");
+                            }
+                            
 
-                        }else if(pointOne.x < pointTwo.x){
-                            double[][] temp = matrixMethods.multiplyMatrices(two[0].getMatrix(), one[0].getMatrix());
-                            answerBox answer = new answerBox(temp.length, temp[0].length, temp, "Multiplcation Answer");
+                        }else if(pointOne.x > pointTwo.x){
+                            try{
+                                double[][] temp = matrixMethods.multiplyMatrices(two[0].getMatrix(), one[0].getMatrix());
+                                answerBox answer = new answerBox(temp.length, temp[0].length, temp, "Multiplcation Answer");
+                            }catch(IllegalArgumentException f){
+                                System.out.println("Invalid opperation- columns don't match rows");
+                            }
                         }
 
                     } else {
@@ -180,10 +189,10 @@ public class HubFrame {
                 two[0].updateMatrix();
                 if (MatrixOneB.isSelected() && !MatrixTwoB.isSelected()) {
                     double[][] temp = matrixMethods.computeRREF(one[0].getMatrix());
-                    answerBox answer = new answerBox(temp.length, temp[0].length, temp, "Subtraction Answer");
+                    answerBox answer = new answerBox(temp.length, temp[0].length, temp, "RREF Answer");
                 }else if(MatrixTwoB.isSelected() && !MatrixOneB.isSelected()){
                     double[][] temp = matrixMethods.computeRREF(two[0].getMatrix());
-                    answerBox answer = new answerBox(temp.length, temp[0].length, temp, "Subtraction Answer");
+                    answerBox answer = new answerBox(temp.length, temp[0].length, temp, "RREF Answer");
                 } else {
                     System.out.println("Please select one matrix");
                 }

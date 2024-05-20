@@ -8,9 +8,10 @@ public class MatrixMethods {
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    public double[][] multiplyMatrices(double[][] matrix1, double[][] matrix2) {
+    public double[][] multiplyMatrices(double[][] matrix1, double[][] matrix2) throws IllegalArgumentException{
         if (matrix1[0].length != matrix2.length) {
             throw new IllegalArgumentException("Matrix multiplication is not possible");
+            
         }
 
         double[][] result = new double[matrix1.length][matrix2[0].length];
