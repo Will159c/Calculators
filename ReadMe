@@ -1,12 +1,73 @@
-#Final project for Linear Algebra 2024. Working positional calculator with Multiplication, Addition, Subtraction, and RREF.
+# Matrix Calculator
 
-#Future additions:
-#Add autofill
-#More operations
-#Physics elements
+A desktop-based Java application that performs various matrix operations, including:
 
-#Grade for class:
-#100%
+- Matrix Addition
+- Matrix Subtraction
+- Matrix Multiplication
+- Row Reduction to RREF (Reduced Row Echelon Form)
 
+Built as the final project for Linear Algebra (Spring 2024). Earned a 100% grade.
 
-#05/20/2024
+---
+
+## 🧠 Features
+
+- Interactive GUI built with Java Swing
+- Fully functional matrix input system
+- Handles basic and advanced operations (like RREF)
+- Input validation to prevent calculation errors
+- Computes operations based on the position of the matrices
+
+---
+
+## 🚀 Planned Features
+
+- Autofill buttons for quick input (identity, zero, random matrices)
+- Support for more matrix operations (e.g., inverse, determinant)
+- Add physics-related functionality (e.g., vectors, transformations)
+
+---
+
+## 🛠️ Tech Stack
+
+- **Language:** Java  
+- **GUI Framework:** Swing  
+- **Paradigm:** Object-Oriented Programming (OOP)
+
+---
+
+## 📸 Screenshots
+
+*(Optional: Add screenshots of the GUI here if possible)*
+
+---
+
+## 📦 How to Run
+
+1. Clone the repository:
+2. Open the project in your favorite Java IDE (e.g., IntelliJ, Eclipse).
+3. Run `Main.java` inside the `MatrixCalculator` folder.
+4. The GUI will launch and allow you to input matrices and choose operations.
+
+---
+
+## 💡 What I Learned
+
+- Implementing matrix operations using object-oriented design patterns
+- Building GUIs using Java Swing
+- Applying linear algebra concepts to real-world software
+
+---
+
+## 📚 Course Info
+
+- **Course:** Linear Algebra, College of the Canyons
+- **Term:** Spring 2023
+- **Grade Received:** 100%
+
+---
+
+## 📎 License
+
+This project is for educational purposes. No license has been applied.
